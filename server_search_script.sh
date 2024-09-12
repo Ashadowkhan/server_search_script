@@ -6,13 +6,20 @@ SHODAN_API_KEY="your_shodan_api_key"
 FOFA_EMAIL="your_fofa_email"
 FOFA_API_KEY="your_fofa_api_key"
 
-# Search queries
-HUNTER_QUERY='product.name="OFBiz"'
-SHODAN_QUERY='Set-Cookie: OFBiz.Visitor'
-FOFA_QUERY='app="Apache_OFBiz"'
-
 # Initialize output file variable
 OUTPUT_FILE=""
+
+# Function to prompt user for search queries
+get_user_queries() {
+  read -p "Enter Hunter Query (default: product.name=\"OFBiz\"): " HUNTER_QUERY
+  read -p "Enter Shodan Query (default: Set-Cookie: OFBiz.Visitor): " SHODAN_QUERY
+  read -p "Enter FOFA Query (default: app=\"Apache_OFBiz\"): " FOFA_QUERY
+
+  # Set defaults if no input is given
+  HUNTER_QUERY=${HUNTER_QUERY:-'product.name="OFBiz"'}
+  SHODAN_QUERY=${SHODAN_QUERY:-'Set-Cookie: OFBiz.Visitor'}
+  FOFA_QUERY=${FOFA_QUERY:-'app="Apache_OFBiz"'}
+}
 
 # Function to search a single domain
 search_domain() {
@@ -89,6 +96,9 @@ fi
 if [[ -z "$OUTPUT_FILE" ]]; then
   OUTPUT_FILE="output.txt"
 fi
+
+# Prompt for queries if not passed as environment variables
+get_user_queries
 
 # If a single domain is provided, search it
 if [[ ! -z "$DOMAIN" ]]; then
